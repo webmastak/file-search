@@ -1,0 +1,50 @@
+#!/bin/bash
+
+cd $(echo $1);
+zenity="$(which zenity)" 
+editor="$(which gedit)"
+fmanager="$(which nautilus)"
+icon="$HOME/.local/share/icons/search.png"
+upn=$(echo "${0##*/}" | sed 's/\(.\)/\u\1/') 
+name="--class=$upn --name=$upn"
+
+list()
+{
+dir=$([[ $(pwd) == */home/* ]] && echo "~/${PWD#*/home/*/}" || echo "$PWD")
+while true; do 
+	slist=$($zenity $name --list --hide-header \
+		  --window-icon=$icon --width=700 --height=600 \
+		  --text="In folder:  $dir" --title "Found files:  $count" \
+		  --column "file" $glist)		
+		  	  		  
+	if [ $? -eq 0 -a -n $slist ]; then  
+		f=$(echo "$slist" | tr '~' ' ') 
+		$fmanager "$f"; $editor "$f"
+	fi
+					  
+	if [ -z $slist ]; then break; fi	
+done			  
+}
+
+main()
+{  
+    if ! [ -z "$1" ]; then	
+		glist=$(fgrep -rwlI "$1" | tr ' ' '~')
+		count=$(echo -n "$glist"| grep -c '^')
+        list
+	fi        	                                       
+}
+
+if [[ -d "$1" ]]; then
+	if [[ -z $(xsel) ]]; then
+		search=$($zenity $name --window-icon=$icon --title "File search" \
+			   --width=300 --entry --text "Enter text:")	
+			   		   
+		if [ $? -eq 0 ]; then main "$search"; fi	      
+	else
+		main "$(xsel -b)"
+	fi
+else
+	$zenit $name --info --no-wrap --window-icon=$icon \
+		  --timeout=3 --text="Select a directory to search"
+fi
