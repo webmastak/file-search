@@ -14,6 +14,7 @@ File search using **fgrep** and **zenity** as a GUI.
 * `cp ~/file-search/local/share/icons/search.png ~/.local/share/icons/search.png`
 * `cp ~/file-search/local/bin/search ~/.local/bin/search`
 * `cp ~/file-search/local/share/nautilus/scripts/FileSearch ~/.local/share/nautilus/scripts/FileSearch`
+* `cp ~/file-search/local/share/nautilus-python/extensions/file-search.py ~/.local/share/nautilus-python/extensions/file-search.py`
 * `enjoy`
 
 
